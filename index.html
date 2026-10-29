@@ -1,0 +1,38 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1">
+    <title>Album Prompter</title>
+    <meta name="description" content="Three unexpected album and artist pairings for your next design exercise.">
+    <link rel="stylesheet" href="./css/styles.css">
+</head>
+<body>
+    <div class="app">
+        <main class="hero">
+            <h1 class="eyebrow">Your album prompts</h1>
+            <p class="intro">Three combinations. Pick one and design the album cover.</p>
+            <div id="promptOutput" class="prompts" aria-live="polite" aria-atomic="true"></div>
+            <div class="hero-actions">
+                <button id="newPrompt" class="btn primary">New combinations</button>
+                <button id="copyBtn" class="btn icon" aria-label="Copy all three combinations">
+                    <svg width="20" height="20" viewBox="0 0 24 24" fill="none" aria-hidden="true">
+                        <rect x="9" y="9" width="10" height="10" stroke="currentColor" stroke-width="1.5" rx="2"/>
+                        <rect x="4" y="4" width="10" height="10" stroke="currentColor" stroke-width="1.5" rx="2"/>
+                    </svg>
+                </button>
+                <span id="copyToast" class="toast" role="status"></span>
+            </div>
+        </main>
+        <footer class="colophon">
+            <span>Album cover design workshop</span>
+            <label class="theme-toggle">
+                <input id="themeToggle" type="checkbox" aria-label="Dark mode">
+                <span class="theme-toggle-track" aria-hidden="true"><span class="theme-toggle-knob"></span></span>
+                <span>Dark mode</span>
+            </label>
+        </footer>
+    </div>
+    <script type="module" src="./js/app.js"></script>
+</body>
+</html>

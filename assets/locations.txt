@@ -1,0 +1,19 @@
+small town
+Denver
+large city
+east coast
+college town
+national park
+New England
+Mid-Atlantic
+Southeast
+Deep South
+Midwest
+Great Plains
+Southwest
+Rocky Mountains
+Pacific Northwest
+West Coast
+Great Lakes Region
+Appalachia
+Gulf Coast
