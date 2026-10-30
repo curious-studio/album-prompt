@@ -1,6 +1,9 @@
-import promptData from '../assets/prompt-data.json';
-import textureOne from '../assets/album-texure-1.png';
-import textureTwo from '../assets/album-texure-2.png';
+// Browser-native asset loading works both on GitHub Pages and through Vite.
+const dataResponse = await fetch(new URL('../assets/prompt-data.json', import.meta.url));
+if (!dataResponse.ok) throw new Error(`Unable to load prompt data: ${dataResponse.status}`);
+const promptData = await dataResponse.json();
+const textureOne = new URL('../assets/album-texure-1.png', import.meta.url).href;
+const textureTwo = new URL('../assets/album-texure-2.png', import.meta.url).href;
 
 const names = [
     'Open & Shut',
