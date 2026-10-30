@@ -73,14 +73,19 @@ function describe(combination) {
     return `The latest album by ${combination.artist}${descriptionEnding(combination)}`;
 }
 
+function setControlVisible(button, visible) {
+    button.classList.toggle('is-visible', visible);
+    button.inert = !visible;
+}
+
 function selectCover(selected) {
     output.querySelectorAll('.album-option').forEach(option => {
         const active = option === selected;
         option.classList.toggle('is-selected', active);
         option.classList.toggle('is-dimmed', Boolean(selected) && !active);
         option.querySelector('.cover-select').setAttribute('aria-pressed', String(active));
-        option.querySelector('.cover-download').hidden = !active;
-        option.querySelector('.album-copy').hidden = !active || !descriptionToggle.checked;
+        setControlVisible(option.querySelector('.cover-download'), active);
+        setControlVisible(option.querySelector('.album-copy'), active && descriptionToggle.checked);
         option.querySelector('.album-description').setAttribute('aria-pressed', String(active));
     });
 }
@@ -181,7 +186,7 @@ function generate() {
         const download = document.createElement('button');
         download.type = 'button';
         download.className = 'btn icon cover-control cover-download';
-        download.hidden = true;
+        download.inert = true;
         download.setAttribute('aria-label', `Download ${album} as PNG`);
         download.title = 'Download PNG';
         download.innerHTML = '<svg width="20" height="20" viewBox="0 0 24 24" fill="none" aria-hidden="true"><path d="M12 3v12m-5-5 5 5 5-5M4 16v4h16v-4" stroke="currentColor" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round"/></svg>';
@@ -221,7 +226,7 @@ function generate() {
         const copy = document.createElement('button');
         copy.type = 'button';
         copy.className = 'btn icon album-copy';
-        copy.hidden = true;
+        copy.inert = true;
         copy.setAttribute('aria-label', `Copy ${album}, artist, and description`);
         copy.title = 'Copy album details';
         copy.innerHTML = '<svg width="20" height="20" viewBox="0 0 24 24" fill="none" aria-hidden="true"><rect x="9" y="9" width="10" height="10" stroke="currentColor" stroke-width="1.5" rx="2"/><rect x="4" y="4" width="10" height="10" stroke="currentColor" stroke-width="1.5" rx="2"/></svg>';
@@ -280,3 +285,16 @@ document.addEventListener('keydown', event => {
     if (event.key === 'Escape') selectCover(null);
 });
 generate();
+
+// Fit the complete workshop above the footer without clipping or page scrolling.
+const workshopStage = document.querySelector('.workshop-stage');
+const workshop = document.querySelector('.hero');
+function fitWorkshop() {
+    const scale = Math.min(1, workshopStage.clientWidth / workshop.offsetWidth,
+        workshopStage.clientHeight / workshop.offsetHeight);
+    workshop.style.setProperty('--workshop-scale', String(Math.max(0, scale)));
+}
+const workshopResizeObserver = new ResizeObserver(fitWorkshop);
+workshopResizeObserver.observe(workshopStage);
+workshopResizeObserver.observe(workshop);
+fitWorkshop();
