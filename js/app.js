@@ -292,14 +292,20 @@ document.addEventListener('keydown', event => {
 });
 generate();
 
-// Fit the complete workshop above the footer without clipping or page scrolling.
+// Fit the desktop workshop above the footer; phones scroll at their natural size.
 const workshopStage = document.querySelector('.workshop-stage');
 const workshop = document.querySelector('.hero');
+const mobileLayout = window.matchMedia('(max-width: 767px)');
 function fitWorkshop() {
+    if (mobileLayout.matches) {
+        workshop.style.removeProperty('--workshop-scale');
+        return;
+    }
     const scale = Math.min(1, workshopStage.clientWidth / workshop.offsetWidth,
         workshopStage.clientHeight / workshop.offsetHeight);
     workshop.style.setProperty('--workshop-scale', String(Math.max(0, scale)));
 }
+mobileLayout.addEventListener('change', fitWorkshop);
 const workshopResizeObserver = new ResizeObserver(fitWorkshop);
 workshopResizeObserver.observe(workshopStage);
 workshopResizeObserver.observe(workshop);

@@ -131,3 +131,36 @@ body {
     transition-delay: 0s;
 }
 .cover-download.btn.is-visible:disabled { opacity: .6; }
+
+/* Phones use natural page flow instead of the desktop workshop's fit-to-screen layout. */
+@media (max-width: 767px) {
+    .app {
+        height: auto;
+        min-height: 100dvh;
+        padding: 24px max(20px, env(safe-area-inset-right)) calc(24px + env(safe-area-inset-bottom)) max(20px, env(safe-area-inset-left));
+        gap: 32px;
+        overflow: visible;
+    }
+    .workshop-stage { flex: none; }
+    .hero { position: static; width: 100%; transform: none; }
+    .hero > .eyebrow { line-height: 1.4; }
+    .intro { margin-top: 8px; }
+    .prompts { display: grid; grid-template-columns: minmax(0, 1fr); gap: 32px; margin: 24px 0; }
+    .album-option, .pairing { min-width: 0; }
+    .pairing { padding: 24px 18px 18px; }
+    .pairing h2 { font-size: clamp(1.6rem, 8vw, 2.5289rem); }
+    .pairing p { font-size: .95890625rem; }
+    .album-description { margin: 20px 8px 0; font-size: 1rem; line-height: 1.6; }
+    .album-description.is-hidden { display: none; }
+    .album-copy-area { display: none; min-height: 0; margin: 12px 8px 0; }
+    .album-copy-area:has(.is-visible) { display: block; }
+    .hero-actions { grid-template-columns: minmax(0, 1fr); gap: 8px; }
+    .hero-actions .btn.primary { width: 100%; min-height: 52px; }
+    .hero-actions .theme-toggle { justify-self: stretch; min-height: 48px; }
+    .hero-actions .theme-toggle:not(.description-toggle) { justify-content: flex-end; }
+    .hero-actions .toast { text-align: left; overflow-wrap: anywhere; }
+    .hero-actions .toast:empty { display: none; }
+    .colophon { flex-wrap: nowrap; gap: 16px; padding-top: 24px; border-top: 1px solid var(--border); }
+    .folder-qr img { width: 64px; height: 64px; }
+    .workshop-materials { min-width: 0; font-size: .75rem; }
+}
