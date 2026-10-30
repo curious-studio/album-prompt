@@ -1,3 +1,5 @@
+import { toBlob } from './vendor/html-to-image.js';
+
 // Browser-native asset loading works both on GitHub Pages and through Vite.
 const dataResponse = await fetch(new URL('../assets/prompt-data.json', import.meta.url));
 if (!dataResponse.ok) throw new Error(`Unable to load prompt data: ${dataResponse.status}`);
@@ -34,7 +36,6 @@ const names = [
 ];
 
 const output = document.getElementById('promptOutput');
-const copyButton = document.getElementById('copyBtn');
 const toast = document.getElementById('copyToast');
 const themeToggle = document.getElementById('themeToggle');
 const descriptionToggle = document.getElementById('descriptionToggle');
@@ -72,6 +73,52 @@ function describe(combination) {
     return `The latest album by ${combination.artist}${descriptionEnding(combination)}`;
 }
 
+function selectCover(selected) {
+    output.querySelectorAll('.album-option').forEach(option => {
+        const active = option === selected;
+        option.classList.toggle('is-selected', active);
+        option.classList.toggle('is-dimmed', Boolean(selected) && !active);
+        option.querySelector('.cover-select').setAttribute('aria-pressed', String(active));
+        option.querySelector('.cover-download').hidden = !active;
+        option.querySelector('.album-copy').hidden = !active || !descriptionToggle.checked;
+        option.querySelector('.album-description').setAttribute('aria-pressed', String(active));
+    });
+}
+
+async function downloadCover(pairing, combination, button) {
+    button.disabled = true;
+    button.setAttribute('aria-busy', 'true');
+    toast.textContent = 'Preparing PNG…';
+    clearTimeout(toastTimer);
+    try {
+        await document.fonts.ready;
+        await pairing.querySelector('.cover-texture').decode();
+        const blob = await toBlob(pairing, {
+            pixelRatio: 2,
+            filter: node => !node.classList?.contains('cover-control'),
+            style: { animation: 'none', transform: 'none', transition: 'none' },
+        });
+        if (!blob) throw new Error('PNG export failed');
+        const url = URL.createObjectURL(blob);
+        const link = document.createElement('a');
+        link.download = `${combination.album} - ${combination.artist}.png`.replace(/[<>:"/\\|?*]/g, '-');
+        link.href = url;
+        link.addEventListener('click', event => event.stopPropagation());
+        document.body.append(link);
+        link.click();
+        link.remove();
+        setTimeout(() => URL.revokeObjectURL(url), 60000);
+        toast.textContent = 'PNG downloaded';
+    } catch (error) {
+        console.error('Cover download failed:', error);
+        toast.textContent = 'Unable to download the cover. Please try again.';
+    } finally {
+        button.disabled = false;
+        button.removeAttribute('aria-busy');
+        toastTimer = setTimeout(() => { toast.textContent = ''; }, 4000);
+    }
+}
+
 function generate() {
     // Choose distinct rotations for every batch, including the initial page load.
     const textureRotations = [0, 90, 180, 270];
@@ -103,10 +150,14 @@ function generate() {
         const { album, artist } = combination;
         const option = document.createElement('article');
         option.className = 'album-option';
+        const toggleSelection = () => selectCover(option.classList.contains('is-selected') ? null : option);
+        option.addEventListener('click', event => {
+            if (!event.target.closest('.cover-download, .album-copy')) toggleSelection();
+        });
         const pairing = document.createElement('section');
         pairing.className = 'pairing';
         pairing.style.setProperty('--texture-rotation', `${textureRotations[index]}deg`);
-        pairing.style.setProperty('--album-texture', `url("${textures[index]}")`);
+
         const title = document.createElement('h2');
         title.setAttribute('aria-label', album);
         titleLines(album).forEach(text => {
@@ -117,10 +168,38 @@ function generate() {
         });
         const subtitle = document.createElement('p');
         subtitle.textContent = keepLastWordsTogether(artist);
-        pairing.append(title, subtitle);
+        const texture = document.createElement('img');
+        texture.className = 'cover-texture';
+        texture.src = textures[index];
+        texture.alt = '';
+        texture.draggable = false;
+        const select = document.createElement('button');
+        select.type = 'button';
+        select.className = 'cover-control cover-select';
+        select.setAttribute('aria-label', `Select ${album} by ${artist}`);
+        select.setAttribute('aria-pressed', 'false');
+        const download = document.createElement('button');
+        download.type = 'button';
+        download.className = 'btn icon cover-control cover-download';
+        download.hidden = true;
+        download.setAttribute('aria-label', `Download ${album} as PNG`);
+        download.title = 'Download PNG';
+        download.innerHTML = '<svg width="20" height="20" viewBox="0 0 24 24" fill="none" aria-hidden="true"><path d="M12 3v12m-5-5 5 5 5-5M4 16v4h16v-4" stroke="currentColor" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round"/></svg>';
+        download.addEventListener('click', () => downloadCover(pairing, combination, download));
+        pairing.append(title, subtitle, texture, select, download);
         option.append(pairing);
         const description = document.createElement('div');
         description.className = 'album-description';
+        description.tabIndex = 0;
+        description.setAttribute('role', 'button');
+        description.setAttribute('aria-label', `Select ${album} by ${artist}: ${describe(combination)}`);
+        description.setAttribute('aria-pressed', 'false');
+        description.addEventListener('keydown', event => {
+            if (event.key === 'Enter' || event.key === ' ') {
+                event.preventDefault();
+                toggleSelection();
+            }
+        });
         description.classList.toggle('is-hidden', !descriptionToggle.checked);
         const artistName = document.createElement('em');
         artistName.textContent = artist;
@@ -137,7 +216,18 @@ function generate() {
         closing.textContent = '”';
         quote.append(opening, 'The latest album by ', artistName, keepLastWordsTogether(descriptionEnding(combination)), closing);
         description.append(eyebrow, quote);
-        option.append(description);
+        const copyArea = document.createElement('div');
+        copyArea.className = 'album-copy-area';
+        const copy = document.createElement('button');
+        copy.type = 'button';
+        copy.className = 'btn icon album-copy';
+        copy.hidden = true;
+        copy.setAttribute('aria-label', `Copy ${album}, artist, and description`);
+        copy.title = 'Copy album details';
+        copy.innerHTML = '<svg width="20" height="20" viewBox="0 0 24 24" fill="none" aria-hidden="true"><rect x="9" y="9" width="10" height="10" stroke="currentColor" stroke-width="1.5" rx="2"/><rect x="4" y="4" width="10" height="10" stroke="currentColor" stroke-width="1.5" rx="2"/></svg>';
+        copy.addEventListener('click', () => copyAlbum(combination));
+        copyArea.append(copy);
+        option.append(description, copyArea);
         return option;
     }));
     clearTimeout(toastTimer);
@@ -166,12 +256,13 @@ descriptionToggle.addEventListener('change', () => {
     output.querySelectorAll('.album-description').forEach(description => {
         description.classList.toggle('is-hidden', !descriptionToggle.checked);
     });
+    selectCover(output.querySelector('.album-option.is-selected'));
     try { localStorage.setItem('albumPrompterShowDescription', String(descriptionToggle.checked)); } catch {}
 });
 
 document.getElementById('newPrompt').addEventListener('click', generate);
-copyButton.addEventListener('click', async () => {
-    const text = combinations.map(combination => `${combination.album}\nby ${combination.artist}\n\n${describe(combination)}`).join('\n\n');
+async function copyAlbum(combination) {
+    const text = `${combination.album}\n${combination.artist}\n\n${describe(combination)}`;
     try {
         await navigator.clipboard.writeText(text);
         toast.textContent = 'Copied to clipboard';
@@ -180,5 +271,12 @@ copyButton.addEventListener('click', async () => {
     }
     clearTimeout(toastTimer);
     toastTimer = setTimeout(() => { toast.textContent = ''; }, 3000);
+}
+
+document.addEventListener('click', event => {
+    if (!event.target.closest('.album-option, .description-toggle')) selectCover(null);
+});
+document.addEventListener('keydown', event => {
+    if (event.key === 'Escape') selectCover(null);
 });
 generate();

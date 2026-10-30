@@ -29,20 +29,21 @@ body {
 .album-option { flex: 0 0 calc((100% - 40px) / 3); min-width: 300px; }
 .album-description { opacity: 1; visibility: visible; transition: opacity .25s ease, visibility 0s linear 0s; margin: calc(16px + 1.25rem) 0 0; color: var(--muted); font-size: 1.1495rem; line-height: 1.6; }
 .pairing { font-family: 'Work Sans', system-ui, sans-serif; position: relative; isolation: isolate; overflow: hidden; background: var(--bg); aspect-ratio: 1; padding: clamp(16px, 2.5vw, 28px); padding-right: clamp(11.2px, 1.75vw, 19.6px); padding-bottom: clamp(11.2px, 1.75vw, 19.6px); border-radius: 10px; display: flex; flex-direction: column; justify-content: flex-end; text-align: right; min-width: 300px; animation: reveal .3s ease; }
-.pairing::after {
-    content: '';
+.cover-texture {
+    width: 100%;
+    height: 100%;
+    object-fit: cover;
     position: absolute;
     inset: 0;
     z-index: 1;
-    background: var(--album-texture) center / cover no-repeat;
     mix-blend-mode: difference;
     transform: rotate(var(--texture-rotation, 0deg));
     pointer-events: none;
 }
 .pairing h2 { margin: 0 0 6px; color: var(--album-color); font-size: clamp(1.643785rem, 3.414015vw, 2.5289rem); font-weight: 800; line-height: .9; overflow-wrap: anywhere; text-wrap: balance; }
 .pairing p { margin: 0; font-size: clamp(.767125rem, 1.3041125vw, .95890625rem); line-height: 1.2; font-weight: 300; }
-.hero-actions { display: grid; grid-template-columns: 48px auto; justify-content: end; align-items: center; gap: 12px; }
-.hero-actions .description-toggle { grid-column: 2; justify-self: end; }
+.hero-actions { display: grid; grid-template-columns: auto; justify-content: end; align-items: center; gap: 12px; }
+.hero-actions .description-toggle { grid-column: 1; justify-self: end; }
 .hero-actions .toast { grid-column: 1 / -1; text-align: right; }
 .btn { display: inline-flex; align-items: center; justify-content: center; min-height: 48px; border-radius: 10px; padding: 12px 24px; border: 2px solid var(--key-color); cursor: pointer; font: inherit; }
 .btn.primary { background: var(--key-color); color: #fff; font-size: 14px; font-weight: 700; text-transform: uppercase; letter-spacing: 2px; }
@@ -91,3 +92,24 @@ body {
 
 [data-theme="light"] .hero > .eyebrow { font-size: 1.0278125rem; }
 [data-theme="light"] .critics-eyebrow { font-size: .77rem; }
+
+.album-option { transition: opacity .2s ease, filter .2s ease; }
+.album-option.is-dimmed { opacity: .5; filter: grayscale(1); }
+@media (hover: hover) {
+    .album-option.is-dimmed:hover { opacity: 1; filter: grayscale(0); }
+    .prompts:has(.album-option.is-dimmed:hover) .album-option.is-selected { opacity: .5; filter: grayscale(1); }
+}
+.cover-select { position: absolute; inset: 0; z-index: 2; border: 0; padding: 0; background: transparent; cursor: pointer; border-radius: inherit; }
+.cover-select:focus-visible { outline: 2px solid var(--key-color); outline-offset: -4px; }
+.cover-download.btn { position: absolute; left: 1rem; bottom: 1rem; z-index: 3; background: var(--bg); }
+.cover-download[hidden] { display: none; }
+.cover-download:disabled { opacity: .6; cursor: wait; }
+
+.pairing { transition: transform .2s ease; }
+@media (hover: hover) and (prefers-reduced-motion: no-preference) {
+    .pairing:hover, .album-option:has(.album-description:hover) .pairing { transform: scale(1.015); }
+}
+.album-description { cursor: pointer; }
+.album-description:focus-visible { outline: 2px solid var(--key-color); outline-offset: 4px; }
+.album-copy-area { min-height: 48px; margin-top: 12px; }
+.album-copy[hidden] { display: none; }
