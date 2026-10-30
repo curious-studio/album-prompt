@@ -54,12 +54,16 @@ body {
 .btn:focus-visible, .theme-toggle input:focus-visible + .theme-toggle-track { outline: 2px solid var(--key-color); outline-offset: 4px; }
 .toast { font-size: .875rem; color: var(--muted); }
 .colophon { flex-shrink: 0; width: 100%; display: flex; justify-content: space-between; align-items: center; flex-wrap: wrap; gap: 20px; color: var(--muted); font-size: .8125rem; }
+.folder-qr { display: block; flex-shrink: 0; line-height: 0; }
+.folder-qr img { display: block; width: 112px; height: 112px; }
+.folder-qr:focus-visible, .workshop-materials:focus-visible { outline: 2px solid var(--key-color); outline-offset: 4px; }
+.workshop-materials { flex: 1; color: var(--key-color); text-decoration: none; line-height: 1.5; }
 .theme-toggle { display: inline-flex; align-items: center; gap: 10px; cursor: pointer; }
 .theme-toggle input { position: absolute; opacity: 0; width: 1px; height: 1px; }
-.theme-toggle-track { position: relative; display: inline-block; width: 24px; height: 14px; border-radius: 999px; background: var(--muted); }
-.theme-toggle-knob { position: absolute; top: 1.5px; left: 1.5px; width: 11px; height: 11px; border-radius: 50%; background: var(--bg); transition: transform .2s ease; }
+.theme-toggle-track { position: relative; display: inline-block; width: 28.8px; height: 16.8px; border-radius: 999px; background: var(--muted); }
+.theme-toggle-knob { position: absolute; top: 1.8px; left: 1.8px; width: 13.2px; height: 13.2px; border-radius: 50%; background: var(--bg); transition: transform .2s ease; }
 .theme-toggle input:checked + .theme-toggle-track { background: var(--key-color); }
-.theme-toggle input:checked + .theme-toggle-track .theme-toggle-knob { transform: translateX(10px); }
+.theme-toggle input:checked + .theme-toggle-track .theme-toggle-knob { transform: translateX(12px); }
 @keyframes reveal { from { opacity: 0; transform: translateY(4px); } to { opacity: 1; transform: translateY(0); } }
 @media (prefers-reduced-motion: reduce) { *, *::before, *::after { animation: none !important; transition: none !important; } }
 
@@ -90,7 +94,7 @@ body {
 
 .hero > .eyebrow { font-size: .934375rem; }
 
-.colophon > span { letter-spacing: .04em; }
+.workshop-materials { letter-spacing: .04em; }
 
 [data-theme="light"] .hero > .eyebrow { font-size: 1.0278125rem; }
 [data-theme="light"] .critics-eyebrow { font-size: .77rem; }
