@@ -45,7 +45,7 @@ body {
 .pairing h2 { margin: 0 0 6px; color: var(--album-color); font-size: clamp(1.643785rem, 3.414015vw, 2.5289rem); font-weight: 800; line-height: .9; overflow-wrap: anywhere; text-wrap: balance; }
 .pairing p { margin: 0; color: #b0b0b0; font-size: clamp(.767125rem, 1.3041125vw, .95890625rem); line-height: 1.2; font-weight: 300; }
 .hero-actions { display: grid; grid-template-columns: auto; justify-content: end; align-items: center; gap: 12px; }
-.hero-actions .description-toggle { grid-column: 1; justify-self: end; }
+.hero-actions .theme-toggle { grid-column: 1; justify-self: end; color: var(--muted); font-size: .875rem; }
 .hero-actions .toast { grid-column: 1 / -1; text-align: right; }
 .btn { display: inline-flex; align-items: center; justify-content: center; min-height: 48px; border-radius: 10px; padding: 12px 24px; border: 2px solid var(--key-color); cursor: pointer; font: inherit; }
 .btn.primary { background: var(--key-color); color: #fff; font-size: 14px; font-weight: 700; text-transform: uppercase; letter-spacing: 2px; }

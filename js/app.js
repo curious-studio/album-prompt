@@ -65,8 +65,8 @@ function keepLastWordsTogether(text) {
     return text.replace(/\s+(\S+)$/, '\u00a0$1');
 }
 
-function descriptionEnding({ location, descriptors }) {
-    return `, based in ${location}, has been described as ${descriptors[0]} and ${descriptors[1]}.`;
+function descriptionEnding({ location, locationPhrase, descriptors }) {
+    return `, ${locationPhrase} ${location}, has been described as ${descriptors[0]} and ${descriptors[1]}.`;
 }
 
 function describe(combination) {
@@ -142,12 +142,18 @@ function generate() {
         const j = Math.floor(Math.random() * (i + 1));
         [shuffled[i], shuffled[j]] = [shuffled[j], shuffled[i]];
     }
+    const locationPhrases = ['based in', 'from their home in', 'rooted in', 'now residing in', 'hailing from'];
+    for (let i = locationPhrases.length - 1; i > 0; i--) {
+        const j = Math.floor(Math.random() * (i + 1));
+        [locationPhrases[i], locationPhrases[j]] = [locationPhrases[j], locationPhrases[i]];
+    }
     combinations = Array.from({ length: 3 }, (_, index) => {
         const firstDescriptor = pick(promptData.descriptors);
         return {
             album: shuffled[index * 2],
             artist: shuffled[index * 2 + 1],
             location: pick(promptData.locations),
+            locationPhrase: locationPhrases[index],
             descriptors: [firstDescriptor, pick(promptData.descriptors.filter(value => value !== firstDescriptor))],
         };
     });
