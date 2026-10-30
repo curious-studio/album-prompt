@@ -60,6 +60,10 @@ function titleLines(title) {
     )[0];
 }
 
+function keepLastWordsTogether(text) {
+    return text.replace(/\s+(\S+)$/, '\u00a0$1');
+}
+
 function descriptionEnding({ location, descriptors }) {
     return `, based in ${location}, has been described as ${descriptors[0]} and ${descriptors[1]}.`;
 }
@@ -112,14 +116,12 @@ function generate() {
             title.append(line);
         });
         const subtitle = document.createElement('p');
-        const by = document.createElement('em');
-        by.textContent = 'by ';
-        subtitle.append(by, document.createTextNode(artist));
+        subtitle.textContent = keepLastWordsTogether(artist);
         pairing.append(title, subtitle);
         option.append(pairing);
         const description = document.createElement('div');
         description.className = 'album-description';
-        description.hidden = !descriptionToggle.checked;
+        description.classList.toggle('is-hidden', !descriptionToggle.checked);
         const artistName = document.createElement('em');
         artistName.textContent = artist;
         const eyebrow = document.createElement('p');
@@ -133,7 +135,7 @@ function generate() {
         opening.textContent = '“';
         const closing = opening.cloneNode();
         closing.textContent = '”';
-        quote.append(opening, 'The latest album by ', artistName, descriptionEnding(combination), closing);
+        quote.append(opening, 'The latest album by ', artistName, keepLastWordsTogether(descriptionEnding(combination)), closing);
         description.append(eyebrow, quote);
         option.append(description);
         return option;
@@ -162,7 +164,7 @@ try {
 } catch {}
 descriptionToggle.addEventListener('change', () => {
     output.querySelectorAll('.album-description').forEach(description => {
-        description.hidden = !descriptionToggle.checked;
+        description.classList.toggle('is-hidden', !descriptionToggle.checked);
     });
     try { localStorage.setItem('albumPrompterShowDescription', String(descriptionToggle.checked)); } catch {}
 });

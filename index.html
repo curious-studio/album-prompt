@@ -5,22 +5,25 @@
     <meta name="viewport" content="width=device-width, initial-scale=1">
     <title>Album Prompter</title>
     <meta name="description" content="Three unexpected album and artist pairings for your next design exercise.">
+    <link rel="preconnect" href="https://fonts.googleapis.com">
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+    <link href="https://fonts.googleapis.com/css2?family=Work+Sans:wght@300;800&display=swap" rel="stylesheet">
     <link rel="stylesheet" href="./css/styles.css">
 </head>
 <body>
     <div class="app">
         <main class="hero">
             <h1 class="eyebrow">DSU Preview Day FA26</h1>
-            <p class="intro">Three combinations. Pick one and design the album cover.</p>
+            <p class="intro">Three combinations. Pick one and design the album&nbsp;cover.</p>
             <div id="promptOutput" class="prompts" aria-live="polite" aria-atomic="true"></div>
             <div class="hero-actions">
-                <button id="newPrompt" class="btn primary">New albums</button>
                 <button id="copyBtn" class="btn icon" aria-label="Copy all three combinations">
                     <svg width="20" height="20" viewBox="0 0 24 24" fill="none" aria-hidden="true">
                         <rect x="9" y="9" width="10" height="10" stroke="currentColor" stroke-width="1.5" rx="2"/>
                         <rect x="4" y="4" width="10" height="10" stroke="currentColor" stroke-width="1.5" rx="2"/>
                     </svg>
                 </button>
+                <button id="newPrompt" class="btn primary">New albums</button>
                 <label class="theme-toggle description-toggle">
                     <input id="descriptionToggle" type="checkbox" checked aria-controls="promptOutput">
                     <span class="theme-toggle-track" aria-hidden="true"><span class="theme-toggle-knob"></span></span>
@@ -30,7 +33,7 @@
             </div>
         </main>
         <footer class="colophon">
-            <span>Album cover design workshop</span>
+            <span>Collaborative album cover design workshop, Fall&nbsp;2026</span>
             <label class="theme-toggle">
                 <input id="themeToggle" type="checkbox" aria-label="Dark mode">
                 <span class="theme-toggle-track" aria-hidden="true"><span class="theme-toggle-knob"></span></span>
