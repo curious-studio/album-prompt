@@ -22,7 +22,7 @@ body {
     font-family: system-ui, -apple-system, 'Segoe UI', Roboto, 'Helvetica Neue', Arial, sans-serif;
     transition: background .3s ease, color .3s ease;
 }
-.app { max-width: 1400px; height: 100dvh; margin: 0 auto; padding: clamp(24px, 4vh, 48px) clamp(28px, 4vw, 40px) calc(24px + env(safe-area-inset-bottom)); display: flex; flex-direction: column; gap: 24px; overflow: hidden; }
+.app { max-width: 1600px; height: 100dvh; margin: 0 auto; padding: clamp(24px, 4vh, 48px) clamp(28px, 4vw, 40px) calc(24px + env(safe-area-inset-bottom)); display: flex; flex-direction: column; gap: 24px; overflow: hidden; }
 .workshop-stage { flex: 1; min-height: 0; position: relative; }
 .hero { width: max(100%, 300px); position: absolute; top: 0; left: 50%; transform: translateX(-50%) scale(var(--workshop-scale, 1)); transform-origin: top center; }
 .eyebrow { margin: 0 0 6px; font-size: .8125rem; font-weight: 400; text-transform: uppercase; letter-spacing: 1px; color: var(--key-color); }
