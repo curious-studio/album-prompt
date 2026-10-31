@@ -11,11 +11,45 @@
     <link rel="stylesheet" href="./css/styles.css">
 </head>
 <body>
+    <template id="title-distress-template">
+        <svg class="title-filter-defs" xmlns="http://www.w3.org/2000/svg" width="0" height="0" aria-hidden="true" focusable="false">
+            <defs>
+                <filter x="-5%" y="-15%" width="110%" height="130%" color-interpolation-filters="sRGB">
+                    <feGaussianBlur in="SourceGraphic" stdDeviation="0.08" result="softened" />
+                    <feTurbulence type="fractalNoise" baseFrequency="0.65" numOctaves="1" seed="7" result="grain" />
+                    <feDisplacementMap in="softened" in2="grain" scale="0.7" xChannelSelector="R" yChannelSelector="G" result="roughened" />
+                    <feComponentTransfer in="roughened" result="crisp">
+                        <feFuncA type="linear" slope="1.35" intercept="-0.12" />
+                    </feComponentTransfer>
+                    <feGaussianBlur in="crisp" stdDeviation="0.5" result="halo-blur" />
+                    <feComponentTransfer in="halo-blur" result="halo">
+                        <feFuncA type="linear" slope="0.18" />
+                    </feComponentTransfer>
+                    <feMerge result="printed-text">
+                        <feMergeNode in="halo" />
+                        <feMergeNode in="crisp" />
+                    </feMerge>
+                    <feTurbulence class="title-speckle" type="fractalNoise" baseFrequency="0.8" numOctaves="1" seed="17" result="speckle-noise" />
+                    <feColorMatrix class="title-speckle" in="speckle-noise" type="matrix" values="0 0 0 0 0  0 0 0 0 0  0 0 0 0 0  1 0 0 0 0" result="speckle-alpha" />
+                    <feComponentTransfer class="title-speckle" in="speckle-alpha" result="speckle-mask">
+                        <feFuncA type="linear" slope="18" intercept="-13" />
+                    </feComponentTransfer>
+                    <feFlood class="title-speckle title-speckle-color" result="paper-color" />
+                    <feComposite class="title-speckle" in="paper-color" in2="speckle-mask" operator="in" result="flecks" />
+                    <feComposite class="title-speckle" in="flecks" in2="crisp" operator="in" result="clipped-flecks" />
+                    <feMerge class="title-speckle">
+                        <feMergeNode in="printed-text" />
+                        <feMergeNode in="clipped-flecks" />
+                    </feMerge>
+                </filter>
+            </defs>
+        </svg>
+    </template>
     <div class="app">
         <main class="workshop-stage">
         <div class="hero">
             <h1 class="eyebrow">DSU Preview Day FA26</h1>
-            <p class="intro">The record label designed a very basic album cover. Can you do&nbsp;better?</p>
+            <p class="intro">When the band released their first album, the record label designed a very basic album cover. Now they're releasing a new edition, and they've asked you to create a cover that reflects their unique style and background.</p>
             <div id="promptOutput" class="prompts" aria-live="polite" aria-atomic="true"></div>
             <div class="hero-actions">
                 <button id="newPrompt" class="btn primary">New albums</button>

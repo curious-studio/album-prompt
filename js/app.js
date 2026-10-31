@@ -99,7 +99,7 @@ async function downloadCover(pairing, combination, button) {
         await document.fonts.ready;
         await pairing.querySelector('.cover-texture').decode();
         const blob = await toBlob(pairing, {
-            pixelRatio: 2,
+            pixelRatio: 4,
             filter: node => !node.classList?.contains('cover-control'),
             style: { animation: 'none', transform: 'none', transition: 'none' },
         });
@@ -170,6 +170,20 @@ function generate() {
         pairing.style.setProperty('--texture-rotation', `${textureRotations[index]}deg`);
 
         const title = document.createElement('h2');
+        // Keep the tiny filter inside each cover so PNG exports include it.
+        const filterDefs = document.getElementById('title-distress-template').content.cloneNode(true);
+        const filterId = `title-distress-${index}`;
+        const titleFilter = filterDefs.querySelector('filter');
+        titleFilter.id = filterId;
+        const groupFilter = titleFilter.cloneNode(true);
+        groupFilter.querySelectorAll('.title-speckle').forEach(node => node.remove());
+        titleFilter.querySelector('feTurbulence.title-speckle').setAttribute('seed', String(Math.floor(Math.random() * 10000)));
+        const groupFilterId = `group-distress-${index}`;
+        groupFilter.id = groupFilterId;
+        titleFilter.parentNode.append(groupFilter);
+        titleFilter.querySelector('feGaussianBlur').setAttribute('stdDeviation', '0.18');
+        pairing.append(filterDefs);
+        title.style.filter = `url(#${filterId})`;
         title.setAttribute('aria-label', album);
         titleLines(album).forEach(text => {
             const line = document.createElement('span');
@@ -178,6 +192,7 @@ function generate() {
             title.append(line);
         });
         const subtitle = document.createElement('p');
+        subtitle.style.filter = `url(#${groupFilterId})`;
         subtitle.textContent = keepLastWordsTogether(artist);
         const texture = document.createElement('img');
         texture.className = 'cover-texture';
@@ -285,28 +300,9 @@ async function copyAlbum(combination) {
 }
 
 document.addEventListener('click', event => {
-    if (!event.target.closest('.album-option, .description-toggle')) selectCover(null);
+    if (!event.target.closest('.album-option, .theme-toggle')) selectCover(null);
 });
 document.addEventListener('keydown', event => {
     if (event.key === 'Escape') selectCover(null);
 });
 generate();
-
-// Fit the desktop workshop above the footer; phones scroll at their natural size.
-const workshopStage = document.querySelector('.workshop-stage');
-const workshop = document.querySelector('.hero');
-const mobileLayout = window.matchMedia('(max-width: 767px)');
-function fitWorkshop() {
-    if (mobileLayout.matches) {
-        workshop.style.removeProperty('--workshop-scale');
-        return;
-    }
-    const scale = Math.min(1, workshopStage.clientWidth / workshop.offsetWidth,
-        workshopStage.clientHeight / workshop.offsetHeight);
-    workshop.style.setProperty('--workshop-scale', String(Math.max(0, scale)));
-}
-mobileLayout.addEventListener('change', fitWorkshop);
-const workshopResizeObserver = new ResizeObserver(fitWorkshop);
-workshopResizeObserver.observe(workshopStage);
-workshopResizeObserver.observe(workshop);
-fitWorkshop();
