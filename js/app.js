@@ -240,7 +240,7 @@ function generate() {
         opening.textContent = '“';
         const closing = opening.cloneNode();
         closing.textContent = '”';
-        quote.append(opening, 'The latest album by ', artistName, keepLastWordsTogether(descriptionEnding(combination)), closing);
+        quote.append(opening, 'The debut album by ', artistName, keepLastWordsTogether(descriptionEnding(combination)), closing);
         description.append(eyebrow, quote);
         const copyArea = document.createElement('div');
         copyArea.className = 'album-copy-area';
