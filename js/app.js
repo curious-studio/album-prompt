@@ -70,7 +70,7 @@ function descriptionEnding({ location, locationPhrase, descriptors }) {
 }
 
 function describe(combination) {
-    return `The latest album by ${combination.artist}${descriptionEnding(combination)}`;
+    return `The debut album by ${combination.artist}${descriptionEnding(combination)}`;
 }
 
 function setControlVisible(button, visible) {
